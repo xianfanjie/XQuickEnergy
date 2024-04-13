@@ -679,16 +679,16 @@ public class SettingsActivity extends Activity {
                     break;
 
                 case R.id.btn_dontCollectList:
-                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.getDontCollectList(), null);
+                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.getDontCollectList(), null, null);
                     break;
 
                 case R.id.btn_dontHelpCollectList:
-                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.getDontHelpCollectList(), null);
+                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.getDontHelpCollectList(), null, null);
                     break;
 
                 case R.id.btn_waterFriendList:
                     ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.getWaterFriendList(),
-                            Config.getWaterCountList());
+                            Config.getWaterCountList(), null);
                     break;
 
                 case R.id.btn_waterFriendCount:
@@ -696,26 +696,25 @@ public class SettingsActivity extends Activity {
                     break;
 
                 case R.id.btn_cooperateWaterList:
-                    ListDialog.show(this, btn.getText(), CooperateUser.getList(), Config.getCooperateWaterList(),
-                            Config.getcooperateWaterNumList());
+                    ListDialog.show(this, btn.getText(), CooperateUser.getList(), Config.getCooperateWaterList(), Config.getcooperateWaterNumList(), Config.getcooperateWaterTotalList());
                     break;
 
                 case R.id.btn_ancientTreeAreaCodeList:
-                    ListDialog.show(this, btn.getText(), AreaCode.getList(), Config.getAncientTreeCityCodeList(), null);
+                    ListDialog.show(this, btn.getText(), AreaCode.getList(), Config.getAncientTreeCityCodeList(), null, null);
                     break;
 
                 case R.id.btn_giveEnergyRainList:
-                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.getGiveEnergyRainList(), null);
+                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.getGiveEnergyRainList(), null, null);
                     break;
 
                 case R.id.btn_reserveList:
                     ListDialog.show(this, btn.getText(), AlipayReserve.getList(), Config.getReserveList(),
-                            Config.getReserveCountList());
+                            Config.getReserveCountList(), null);
                     break;
 
                 case R.id.btn_beachList:
                     ListDialog.show(this, btn.getText(), AlipayBeach.getList(), Config.getBeachList(),
-                            Config.getBeachCountList());
+                            Config.getBeachCountList(), null);
                     break;
 
                 case R.id.btn_sendType:
@@ -723,7 +722,7 @@ public class SettingsActivity extends Activity {
                     break;
 
                 case R.id.btn_dontSendFriendList:
-                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.getDontSendFriendList(), null);
+                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.getDontSendFriendList(), null, null);
                     break;
 
                 case R.id.btn_recallAnimalType:
@@ -736,16 +735,16 @@ public class SettingsActivity extends Activity {
 
                 case R.id.btn_feedFriendAnimalList:
                     ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.getFeedFriendAnimalList(),
-                            Config.getFeedFriendCountList());
+                            Config.getFeedFriendCountList(), null);
                     break;
 
                 case R.id.btn_dontNotifyFriendList:
-                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.getDontNotifyFriendList(), null);
+                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.getDontNotifyFriendList(), null, null);
                     break;
 
                 case R.id.btn_visitFriendList:
                     ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.getVisitFriendList(),
-                            Config.getVisitFriendCountList());
+                            Config.getVisitFriendCountList(), null);
                     break;
 
                 case R.id.btn_animalSleepTime:
@@ -770,12 +769,12 @@ public class SettingsActivity extends Activity {
                     break;
 
                 case R.id.btn_WhoYouWantToGiveTo:
-                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.whoYouWantGiveTo(), null,
+                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.whoYouWantGiveTo(), null, null,
                             ListDialog.ListType.RADIO);
                     break;
 
                 case R.id.btn_sendFriendCard:
-                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.sendFriendCard(), null,
+                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.sendFriendCard(), null, null,
                             ListDialog.ListType.RADIO);
                     break;
 
@@ -785,15 +784,15 @@ public class SettingsActivity extends Activity {
                     break;
 
                 case R.id.btn_stallOpenList:
-                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.stallOpenList(), null);
+                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.stallOpenList(), null, null);
                     break;
 
                 case R.id.btn_stallWhiteList:
-                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.stallWhiteList(), null);
+                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.stallWhiteList(), null, null);
                     break;
 
                 case R.id.btn_stallBlackList:
-                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.stallBlackList(), null);
+                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.stallBlackList(), null, null);
                     break;
 
                 case R.id.btn_stallAllowOpenTime:
@@ -805,7 +804,7 @@ public class SettingsActivity extends Activity {
                     break;
 
                 case R.id.btn_stallInviteShopList:
-                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.stallInviteShopList(), null);
+                    ListDialog.show(this, btn.getText(), AlipayUser.getList(), Config.stallInviteShopList(), null, null);
                     break;
             }
         }

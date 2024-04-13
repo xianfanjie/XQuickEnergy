@@ -1,0 +1,46 @@
+name: Build and Sign APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 11
+
+      - name: Release Apk Sign
+        run: |
+          echo "${{ secrets.ANDROID_SIGNING_KEY }}" | base64 --decode > $GITHUB_WORKSPACE/app/keystore.jks
+          echo "ANDROID_KEYSTORE_FILE=./keystore.jks" >> gradle.properties
+          echo "ANDROID_KEYSTORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> gradle.properties
+          echo "ANDROID_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}" >> gradle.properties
+          echo "ANDROID_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}" >> gradle.properties
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Build with Gradle
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease --build-cache --parallel --daemon --warning-mode all        
+
+      - name: Create Release tag
+        run: echo "release_tag=$(basename app/build/outputs/apk/release/*.apk .apk)" >> $GITHUB_ENV
+
+      - name: Upload Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: app/build/outputs/apk/release/*.apk
+          tag_name: ${{ env.release_tag }}
+          token: ${{ secrets.GITHUB_TOKEN }}

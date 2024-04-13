@@ -2,7 +2,20 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdk 29
-
+    signingConfigs {
+        if (project.hasProperty("ANDROID_KEYSTORE_FILE")) {
+            release {
+                storeFile file(ANDROID_KEYSTORE_FILE)
+                storePassword ANDROID_KEYSTORE_PASSWORD
+                keyAlias ANDROID_KEY_ALIAS
+                keyPassword ANDROID_KEY_PASSWORD
+                v1SigningEnabled true
+                v2SigningEnabled true
+                enableV3Signing true
+                enableV4Signing true
+            }
+        }
+    }
     defaultConfig {
         applicationId "pansong291.xposed.quickenergy.repair"
         minSdk 21
@@ -13,6 +26,9 @@ android {
     }
     buildTypes {
         release {
+            if (project.hasProperty("ANDROID_KEYSTORE_FILE")) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

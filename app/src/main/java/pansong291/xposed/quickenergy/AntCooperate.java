@@ -52,13 +52,19 @@ public class AntCooperate {
                                 }
                             }
                             if (index >= 0) {
-                                int num = Config.getcooperateWaterNumList().get(index);
-                                if (num > waterDayLimit)
-                                    num = waterDayLimit;
-                                if (num > userCurrentEnergy)
-                                    num = userCurrentEnergy;
-                                if (num > 0)
-                                    cooperateWater(FriendIdMap.getCurrentUid(), cooperationId, num, name);
+                                // 获取每天需要浇水的量
+                                int waterCount = Config.getcooperateWaterNumList().get(index);
+                                // 获取总共需要浇水的量
+                                int totalWaterLimit = Config.getcooperateWaterTotalList().get(index);
+                                // 获取当前用户已经浇水的量
+                                int alreadyWateredCount = Statistics.getAlreadyWateredCount(FriendIdMap.getCurrentUid(), cooperationId);
+                                // 计算剩余需要浇水的量
+                                int remainingWaterLimit = totalWaterLimit - alreadyWateredCount;
+                                // 限制每次浇水量不超过每日浇水限制、剩余需要浇水的量和当前用户的能量值中的最小值
+                                waterCount = Math.min(Math.min(Math.min(waterCount, waterDayLimit), remainingWaterLimit), userCurrentEnergy);
+                                // 如果每次浇水量大于0，则执行浇水操作
+                                if (waterCount > 0)
+                                    cooperateWater(FriendIdMap.getCurrentUid(), cooperationId, waterCount, name);
                             }
                         }
                     } else {
@@ -80,6 +86,11 @@ public class AntCooperate {
             if ("SUCCESS".equals(jo.getString("resultCode"))) {
                 Log.forest("合种浇水🚿[" + name + "]" + jo.getString("barrageText"));
                 Statistics.cooperateWaterToday(FriendIdMap.getCurrentUid(), coopId);
+                Statistics.updateAlreadyWateredCount(uid, coopId, count);
+                if (Statistics.isWateringCompleted(uid, coopId)) {
+                    Config.removeCooperateWater(uid, coopId);
+                    Statistics.removeAlreadyWateredCount(uid, coopId);
+                }
             } else {
                 Log.i(TAG, jo.getString("resultDesc"));
             }

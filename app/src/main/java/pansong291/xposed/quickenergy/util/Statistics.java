@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Statistics {
@@ -109,7 +110,7 @@ public class Statistics {
             jn_dailyAnswerList = "dailyAnswerList", jn_doubleTimes = "doubleTimes",
             jn_spreadManureList = "spreadManureList", jn_protectBubbleList = "protectBubbleList",
             jn_stallShareIdList = "stallShareIdList", jn_stallP2PHelpedList = "stallP2PHelpedList",
-            jn_stallHelpedCountList = "stallHelpedCountList";
+            jn_stallHelpedCountList = "stallHelpedCountList", jn_alreadyWateredCountJSON="alreadyWateredCountJSON";
 
     private TimeStatistics year;
     private TimeStatistics month;
@@ -118,6 +119,7 @@ public class Statistics {
     // forest
     private ArrayList<WaterFriendLog> waterFriendLogList;
     private ArrayList<String> cooperateWaterList;
+    private JSONObject alreadyWateredCountJSON;
     private ArrayList<String> syncStepList;
     private ArrayList<ReserveLog> reserveLogList;
     private ArrayList<BeachLog> beachLogList;
@@ -340,6 +342,36 @@ public class Statistics {
             bl = stat.beachLogList.get(index);
         }
         bl.applyCount += count;
+        save();
+    }
+    public static int getAlreadyWateredCount(String uid, String coopId) throws JSONException {
+        Statistics stat = getStatistics();
+        String k = uid + "_" + coopId;
+        // 如果存在对应的记录，则返回累计浇水总量，否则返回0
+        return stat.alreadyWateredCountJSON.has(k) ? stat.alreadyWateredCountJSON.getInt(k) : 0;
+    }
+    public static void updateAlreadyWateredCount(String uid, String coopId, int waterCount) throws JSONException {
+        Statistics stat = getStatistics();
+        String k = uid + "_" + coopId;
+        // 如果已存在对应记录，则更新浇水总量；否则，创建新的记录并保存
+        if (stat.alreadyWateredCountJSON.has(k)) {
+            int alreadyWateredCount = stat.alreadyWateredCountJSON.getInt(k) + waterCount;
+            stat.alreadyWateredCountJSON.put(k, alreadyWateredCount);
+        } else {
+            stat.alreadyWateredCountJSON.put(k, waterCount);
+        }
+        save();
+    }
+    public static boolean isWateringCompleted(String uid, String coopId) throws JSONException {
+        Statistics stat = getStatistics();
+        int index = Config.getCooperateWaterList().indexOf(coopId);
+        int total = Config.getcooperateWaterTotalList().get(index);
+        int alreadyWateredCount = stat.alreadyWateredCountJSON.getInt(uid + "_" + coopId);
+        return alreadyWateredCount >= total;
+    }
+    public static void removeAlreadyWateredCount(String uid, String coopId) {
+        Statistics stat = getStatistics();
+        stat.alreadyWateredCountJSON.remove(uid + "_" + coopId);
         save();
     }
 
@@ -885,6 +917,8 @@ public class Statistics {
 
             stat.day.watered = joo.getInt(jn_watered);
 
+            stat.alreadyWateredCountJSON = jo.has(jn_alreadyWateredCountJSON) ? jo.getJSONObject(jn_alreadyWateredCountJSON): new JSONObject();
+
             stat.waterFriendLogList = new ArrayList<>();
 
             if (jo.has(Config.jn_waterFriendList)) {
@@ -1144,6 +1178,8 @@ public class Statistics {
             joo.put(jn_helped, stat.day.helped);
             joo.put(jn_watered, stat.day.watered);
             jo.put(jn_day, joo);
+
+            jo.put(jn_alreadyWateredCountJSON, stat.alreadyWateredCountJSON);
 
             ja = new JSONArray();
             for (int i = 0; i < stat.waterFriendLogList.size(); i++) {

@@ -202,6 +202,7 @@ public class Config {
     private boolean cooperateWater;
     private List<String> cooperateWaterList;
     private List<Integer> cooperateWaterNumList;
+    private List<Integer> cooperateWaterTotalList;
     private boolean ancientTree;
     private List<String> ancientTreeCityCodeList;
     private boolean energyRain;
@@ -643,6 +644,16 @@ public class Config {
 
     public static List<Integer> getcooperateWaterNumList() {
         return getConfig().cooperateWaterNumList;
+    }
+    public static List<Integer> getcooperateWaterTotalList() {
+        return getConfig().cooperateWaterTotalList;
+    }
+    public static void removeCooperateWater(String uid, String coopId) {
+        int index = getCooperateWaterList().indexOf(coopId);
+        getConfig().cooperateWaterList.remove(index);
+        getConfig().cooperateWaterNumList.remove(index);
+        getConfig().cooperateWaterTotalList.remove(index);
+        saveConfigFile();
     }
 
     public static void setAncientTree(boolean b) {
@@ -1429,6 +1440,8 @@ public class Config {
             c.cooperateWaterList = new ArrayList<>();
         if (c.cooperateWaterNumList == null)
             c.cooperateWaterNumList = new ArrayList<>();
+        if (c.cooperateWaterTotalList == null)
+            c.cooperateWaterTotalList = new ArrayList<>();
         c.ancientTree = true;
         c.reserve = true;
         if (c.reserveList == null)
@@ -1684,12 +1697,14 @@ public class Config {
 
             config.cooperateWaterList = new ArrayList<>();
             config.cooperateWaterNumList = new ArrayList<>();
+            config.cooperateWaterTotalList = new ArrayList<>();
             if (jo.has(jn_cooperateWaterList)) {
                 ja = jo.getJSONArray(jn_cooperateWaterList);
                 for (int i = 0; i < ja.length(); i++) {
                     jaa = ja.getJSONArray(i);
                     config.cooperateWaterList.add(jaa.getString(0));
                     config.cooperateWaterNumList.add(jaa.getInt(1));
+                    config.cooperateWaterTotalList.add(jaa.getInt(2));
                 }
             }
             //Log.i(TAG, jn_cooperateWaterList + ":" + String.join(",", config.cooperateWaterList));
@@ -2154,6 +2169,7 @@ public class Config {
                 jaa = new JSONArray();
                 jaa.put(config.cooperateWaterList.get(i));
                 jaa.put(config.cooperateWaterNumList.get(i));
+                jaa.put(config.cooperateWaterTotalList.get(i));
                 ja.put(jaa);
             }
             jo.put(jn_cooperateWaterList, ja);

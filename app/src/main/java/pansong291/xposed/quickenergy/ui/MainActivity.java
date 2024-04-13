@@ -148,7 +148,7 @@ public class MainActivity extends Activity {
                 startActivity(new Intent(this, SettingsActivity.class));
                 return;
             case R.id.btn_friend_watch:
-                ListDialog.show(this, getString(R.string.friend_watch), FriendWatch.getList(), new ArrayList<>(), null, ListDialog.ListType.SHOW);
+                ListDialog.show(this, getString(R.string.friend_watch), FriendWatch.getList(), new ArrayList<>(), null, null, ListDialog.ListType.SHOW);
                 return;
         }
         Intent it = new Intent(this, HtmlViewerActivity.class);

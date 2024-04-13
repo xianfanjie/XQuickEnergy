@@ -33,6 +33,7 @@ public class ListDialog {
     static ListView lv_list;
     static List<String> selectedList;
     static List<Integer> countList;
+    static List<Integer> totalList;
     static ListAdapter.ViewHolder curViewHolder;
     static IdAndName curIdAndName;
 
@@ -51,14 +52,15 @@ public class ListDialog {
     }
 
     public static void show(Context c, CharSequence title, List<? extends IdAndName> bl, List<String> sl,
-            List<Integer> cl) {
-        show(c, title, bl, sl, cl, ListType.CHECK);
+                            List<Integer> cl, List<Integer> tl) {
+        show(c, title, bl, sl, cl, tl, ListType.CHECK);
     }
 
     public static void show(Context c, CharSequence title, List<? extends IdAndName> bl, List<String> sl,
-            List<Integer> cl, ListType listType) {
+                            List<Integer> cl, List<Integer> tl, ListType listType) {
         selectedList = sl;
         countList = cl;
+        totalList = tl;
         ListAdapter la = ListAdapter.get(c, listType);
         la.setBaseList(bl);
         la.setSelectedList(selectedList);
@@ -183,14 +185,19 @@ public class ListDialog {
         }
         edtDialog.setTitle(curIdAndName.name);
         if (curIdAndName instanceof CooperateUser)
-            edt_count.setHint("浇水克数");
+            edt_count.setHint("每天浇水克数,总需浇水克数");
         else
             edt_count.setHint("次数");
         int i = selectedList.indexOf(curIdAndName.id);
-        if (i >= 0)
-            edt_count.setText(String.valueOf(countList.get(i)));
-        else
+        if (i >= 0) {
+            if (curIdAndName instanceof CooperateUser) {
+                edt_count.setText(countList.get(i) + "," + totalList.get(i));
+            }else {
+                edt_count.setText(String.valueOf(countList.get(i)));
+            }
+        } else {
             edt_count.getText().clear();
+        }
     }
 
     private static AlertDialog getEdtDialog(Context c) {
@@ -207,9 +214,14 @@ public class ListDialog {
                 public void onClick(DialogInterface p1, int p2) {
                     if (p2 == DialogInterface.BUTTON_POSITIVE) {
                         int count = 0;
+                        int total = 0;
                         if (edt_count.length() > 0)
                             try {
-                                count = Integer.parseInt(edt_count.getText().toString());
+                                String[] parts = edt_count.getText().toString().split(",");
+                                count = Integer.parseInt(parts[0]);
+                                if (curIdAndName instanceof CooperateUser) {
+                                    total = Integer.parseInt(parts[1]);
+                                }
                             } catch (Throwable t) {
                                 return;
                             }
@@ -218,14 +230,23 @@ public class ListDialog {
                             if (index < 0) {
                                 selectedList.add(curIdAndName.id);
                                 countList.add(count);
+                                if (curIdAndName instanceof CooperateUser) {
+                                    totalList.add(total);
+                                }
                             } else {
                                 countList.set(index, count);
+                                if (curIdAndName instanceof CooperateUser) {
+                                    totalList.set(index, total);
+                                }
                             }
                             curViewHolder.cb.setChecked(true);
                         } else {
                             if (index >= 0) {
                                 selectedList.remove(index);
                                 countList.remove(index);
+                                if (curIdAndName instanceof CooperateUser) {
+                                    totalList.remove(index);
+                                }
                             }
                             curViewHolder.cb.setChecked(false);
                         }
